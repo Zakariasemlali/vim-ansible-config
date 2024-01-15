@@ -1,0 +1,12 @@
+---
+- name: Deploy VIM with vundle and plugins, vimrc
+  hosts: all
+  gather_facts: true
+  vars:
+    vim_dir: "{{ ansible_env.HOME}}/.vim"
+    vimrc: "{{ ansible_env.HOME }}/.vimrc"
+  tasks:
+    - name: include vim-config.yml
+      include_tasks: vim-config.yml
+      tags:
+        - vimconfig

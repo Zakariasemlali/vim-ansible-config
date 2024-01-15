@@ -1,0 +1,246 @@
+set nocompatible
+filetype off
+
+" Following lines set GUI Font
+" set guifont=CaskaydiaCove\ Nerd\ Font\ 10
+
+au BufNewFile *.sh 0r ~/.vim/sh.skeleton
+
+" YAML FORMATTING
+autocmd FileType yaml setlocal et ts=2 ai sw=2 nu sts=0
+colorscheme default
+
+" Remember cursor last position
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+"insert timestamp using autocommand
+au BufWritePre,FileWritePre *.sh ks|call LastMod()|'s
+fun LastMod()
+    if line("$") > 5 
+        let l = 5 
+    else
+        let l == line("$")
+    endif
+    exe "1," . l . "g/Last modified: /s/Last modified: .*/Last modified: " .
+                \ strftime("%Y %b %d %X")
+endfun
+
+" insert bash script name
+
+au BufWritePre,FileWritePre *.sh ks|call ScriptName()|'s
+fun ScriptName()
+    let l = 3
+    exe "1," . l . "g/Script name: /s/Script name: .*/Script name: " .
+                \ (expand("%:t"))
+endfun
+
+
+" Highlight trailing whitespace and TAB characters
+" " source: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$\| \+\ze\t\|\t/
+
+
+" MAPPINGS
+" Set the path, so we can easily open files with the gf command
+set path+=./**;,,
+nnoremap gf :e <cfile><CR>
+
+"
+" mapping for searching occurences for the word under the cursor
+nnoremap <leader>s :%s/\<<C-r><C-w>\>//gn<CR>
+"
+"
+" Disable Arrow keys in Normal mode
+"nnoremap <Left> <Nop>
+"nnoremap <Down> <Nop>
+"nnoremap <Up> <Nop>
+"nnoremap <Right> <Nop>
+
+" define leader key
+" defining the leader key must be done before all the mappings using it
+let mapleader = "-"
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+
+
+" press F3 copy everything to system clipboard
+nnoremap <F3> :%y+<CR>
+
+" press F4 delete everything
+nnoremap <F4> ggdG
+
+" https://learnvimscriptthehardway.stevelosh.com/chapters/32.html
+" the mapping was defined in the ~/.vim/plugin/grep-operator.vim script
+" instead
+"
+"Split resize mappings
+nnoremap <silent> <leader>wx :vertical resize -2<CR>
+nnoremap <silent> <leader>wq :vertical resize +2<CR>
+" Mapping to toggle comments
+nmap <leader>c :Stealth<CR>
+
+" define env variables
+let $BASHRC = "/home/zak/.bashrc"
+noremap <leader>eb :vsplit $BASHRC<cr>
+"imap <c-u> <esc><c-v>b<S-u>ea
+"nnoremap <c-d> <esc>ddi
+nnoremap bs i#!/bin/bash<ESC>o
+nnoremap <leader>py i#!/usr/bin/env python3<ESC>o
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+"manage buffers
+nnoremap <F5> :buffers<CR>:buffer<Space>
+nnoremap <Leader>l :ls<CR>
+nnoremap <Leader>b :bp<CR>
+nnoremap <Leader>f :bn<CR>
+nnoremap <Leader>1 :1b<CR>
+nnoremap <Leader>2 :2b<CR>
+nnoremap <Leader>3 :3b<CR>
+nnoremap <Leader>4 :4b<CR>
+nnoremap <Leader>5 :5b<CR>
+"
+set wildchar=<Tab> wildmenu wildmode=full
+" map CTRL+S key to save a file
+nnoremap <C-S> :w<CR>
+"
+" Split directions
+set splitbelow
+set splitright
+
+" Highlight cursor line and column
+set cursorline
+
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'preservim/nerdtree'
+Plugin 'segeljakt/vim-stealth'
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+
+let g:airline_theme='dark_minimal'
+let g:airline#extensions#tabline#enabled=1
+let g:airline_powerline_fonts=1
+
+
+
+" adapt file change delay for gitgutter plugin
+set updatetime=100
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+"---------------------------------------------------------------------
+" Set shift width to 4 spaces.
+set shiftwidth=4
+
+" Set tab width to 4 columns.
+set tabstop=4
+
+" Use space characters instead of tabs.
+set expandtab
+
+" Do not save backup files.
+set nobackup
+
+" Do not let cursor scroll below or above N number of lines when scrolling.
+set scrolloff=10
+
+" Do not wrap lines. Allow long lines to extend as far as the line goes.
+set nowrap
+
+" While searching though a file incrementally highlight matching characters as you type.
+set incsearch
+
+" Ignore capital letters during search.
+set ignorecase
+
+" Override the ignorecase option if searching for capital letters.
+" This will allow you to search specifically for capital letters.
+set smartcase
+
+" Show partial command you type in the last line of the screen.
+set showcmd
+
+" Show the mode you are on the last line.
+set showmode
+
+" Show matching words during a search.
+set showmatch
+
+" Use highlighting when doing a search.
+set hlsearch
+
+" Set the commands to save in history default number is 20.
+set history=1000
+set number
+syntax on
+" filetype on
+"
+"
+if &term =~ "screen"                                                   
+    let &t_BE = "\e[?2004h"                                              
+    let &t_BD = "\e[?2004l"                                              
+    exec "set t_PS=\e[200~"                                              
+    exec "set t_PE=\e[201~"                                              
+endif
+
+
+
+
+" Backup configuration
+" Turn on backup option
+" set backup
+"
+" Where to store backups
+" set backupdir=~/.vim/backup//
+"
+" Make backup before overwriting the current buffer
+" set writebackup
+"
+" Overwrite the original backup file
+" set backupcopy=yes
+"
+" Meaningful backup name, like filename@2015-04-05.14:59
+au BufWritePre * let &bex = '@' . strftime("%F.%H:%M")
+
+
+" Enable mouse
+set mouse=a
+
+" remapped keys
+inoremap {      {}<Left>
+inoremap {<CR>  {<CR>}<Esc>O
+inoremap {{     {
+inoremap {}     {}
+inoremap " ""<Left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left><space><space><left>
+
+
